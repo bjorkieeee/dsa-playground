@@ -1,6 +1,5 @@
 // TODO
 // insertAtIndex(): Insert a new node at any specific index.
-// findByValue(): Find the index of a node with a given value.
 // reverseList(): Reverse the entire list.
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,27 +14,28 @@ struct Node* initializeLinkedList(){
     return NULL;
 }
 
-struct Node* getLastItemInLinkedList(struct Node* list){
-    while (list->next != NULL){
-        list = list->next;
+struct Node* getLastItemInLinkedList(struct Node* head){
+    struct Node* current = head;
+    while (current->next != NULL){
+        current = current->next;
     }
-    return list;
-}
+    return current;
+} 
 
-bool isEmpty(struct Node* list){
-    if (list == NULL){
+bool isEmpty(struct Node* head){
+    if (head == NULL){
         return true;
     } else {
         return false;
     }
 }
 
-int getLength(struct Node** list){
-    if (isEmpty(*list)) {
+int getLength(struct Node** pHead){
+    if (isEmpty(*pHead)) {
         return 0;
     } else {
         int count = 0;
-        struct Node* current = *list;
+        struct Node* current = *pHead;
         while (current->next != NULL){
             count += 1;
             current = current->next;
@@ -45,24 +45,47 @@ int getLength(struct Node** list){
     }
 }
 
-void push(struct Node** list, int data){ // list is an address of struct Node type
+int findByValue(struct Node** pHead, int data){
+    // Return -1 if list is empty
+    // Return -1 if not found
+    // if found return that index
+    // We can only return the first instance of that value. So if the value 100 is stored in multiple nodes
+    // we will only get the first occurrence
+    if (isEmpty(*pHead)){
+        printf("The list is empty, we can't find something from an empty list.\n");
+        return -1;
+    } 
+
+    int count = 0;
+    struct Node* current = *pHead;
+    while (current != NULL && current->data != data ){
+        current = current->next;
+        count += 1;
+    }
+    if (current == NULL){
+        return -1;
+    }
+    return count;
+}
+
+void push(struct Node** pHead, int data){ // list is an address of struct Node type
     // We have two parts. If the linked list is NULL, and if it's not NULL
-    if (isEmpty(*list)){ // if that address == NULL meaning we have no items yet
+    if (isEmpty(*pHead)){ // if that address == NULL meaning we have no items yet
         // first item
-        *list = (struct Node*)malloc(sizeof(struct Node)); // creating a new address in memory
-        (*list)->data = data; // updating the data at that address
-        (*list)->next = NULL; // Upsdating the next at that address
+        *pHead = (struct Node*)malloc(sizeof(struct Node)); // creating a new address in memory
+        (*pHead)->data = data; // updating the data at that address
+        (*pHead)->next = NULL; // Upsdating the next at that address
     } else {
         // not first item
         struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
         newNode->data = data;
         newNode->next = NULL;
-        struct Node* lastItem = getLastItemInLinkedList(*list);
+        struct Node* lastItem = getLastItemInLinkedList(*pHead);
         lastItem->next = newNode;
     }
 }
 
-void deleteByIndex(struct Node** list, int index){
+void deleteByIndex(struct Node** pHead, int index){
     // Delete by index, starting with 0 like regular arrays
     // if our item is in the beginning, just delete it, we will point to a new head. We know it's first by checking if index is 0 
     // if our item is last, update previous item to point to NULL. We know it's last by checking if it points to NULL
@@ -70,18 +93,18 @@ void deleteByIndex(struct Node** list, int index){
     // above two conditions don't get hit What if our list == null?
     // What if the index is NULL?
     // don't forget to free the memory
-    if (isEmpty(*list)){
+    if (isEmpty(*pHead)){
         printf("The list is empty, we can't delete something from an empty list.\n");
         return; // don't do anything? there is nothing to delete?
     }
     else if (index == 0){
-        struct Node* temp = *list;
-        *list = (*list)->next; // we need to ensure our head is pointing to the new head before we free
+        struct Node* temp = *pHead;
+        *pHead = (*pHead)->next; // we need to ensure our head is pointing to the new head before we free
         free(temp);
         return;
     } 
 
-    struct Node* current = *list;
+    struct Node* current = *pHead;
     struct Node* previous = NULL;
     int count = 0;
     while (count != index && current != NULL){
@@ -105,15 +128,15 @@ void deleteByIndex(struct Node** list, int index){
     }
 }
 
-int getDataByIndex(struct Node** list, int index){
+int getDataByIndex(struct Node** pHead, int index){
     // Index could be out of bounds
     // What if list is null?
-    if (isEmpty(*list)){
+    if (isEmpty(*pHead)){
         printf("Seems like the linked list is empty, so I can't get you any data. Insert some data into your linked list first.\n");
         return -1;
     } 
     int count = 0;
-    struct Node* current = *list;
+    struct Node* current = *pHead;
     while (count != index && current != NULL){
         count += 1;
         current = current->next;
@@ -126,18 +149,19 @@ int getDataByIndex(struct Node** list, int index){
     }
 }
 
-void printAllNodes(struct Node** list){\
+void printAllNodes(struct Node** pHead){\
     int itemNum = 0;
-    while ((*list)->next != NULL){
+    struct Node* current = *pHead;
+    while (current->next != NULL){
         itemNum += 1;
-        printf("Data of item %d: %d\n", itemNum, (*list)->data);
-        printf("Address of next item is: %p\n\n", (*list)->next);
-        *list = (*list)->next;
+        printf("Data of item %d: %d\n", itemNum, current->data);
+        printf("Address of next item is: %p\n\n", current->next);
+        current = current->next;
     }
     itemNum += 1;
-    printf("Addess of item %d: %p\n", itemNum, *list);
-    printf("Data of item %d: %d\n", itemNum, (*list)->data);
-    printf("Address of next item is: %p\n\n", (*list)->next);
+    printf("Addess of item %d: %p\n", itemNum, current);
+    printf("Data of item %d: %d\n", itemNum, current->data);
+    printf("Address of next item is: %p\n\n", current->next);
 }
 
     
@@ -151,7 +175,9 @@ int main(){
     push(&myLinkedList, 200);
     push(&myLinkedList, 300);
     push(&myLinkedList, 400);
+    push(&myLinkedList, 400);
     push(&myLinkedList, 500);
+    push(&myLinkedList, 600);
 
     // Deleting items
     deleteByIndex(&myLinkedList, 1);
@@ -164,6 +190,14 @@ int main(){
 
     // Print all current nodes for reference
     printAllNodes(&myLinkedList);
+
+    // Finding the index of a value
+    int myValue1 = findByValue(&myLinkedList, 200);
+    printf("The index at value 200 is: %d\n", myValue1);
+    int myValue2 = findByValue(&myLinkedList, 300);
+    printf("The index at value 300 is: %d\n", myValue2);
+    int myValue3 = findByValue(&myLinkedList, 400);
+    printf("The index at value 400 is: %d\n", myValue3);
 
    return 0;
 }
