@@ -3,7 +3,6 @@
 // findByValue(): Find the index of a node with a given value.
 // reverseList(): Reverse the entire list.
 // getLength(): Get the total number of nodes in the list.
-// isEmpty(): Check if the list is empty.
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -24,7 +23,7 @@ struct Node* getLastItemInLinkedList(struct Node* list){
     return list;
 }
 
-bool isEmpty(struct Node** list){
+bool isEmpty(struct Node* list){
     if (list == NULL){
         return true;
     } else {
@@ -34,7 +33,7 @@ bool isEmpty(struct Node** list){
 
 void push(struct Node** list, int data){ // list is an address of struct Node type
     // We have two parts. If the linked list is NULL, and if it's not NULL
-    if (*list == NULL){ // if that address == NULL meaning we have no items yet
+    if (isEmpty(*list)){ // if that address == NULL meaning we have no items yet
         // first item
         *list = (struct Node*)malloc(sizeof(struct Node)); // creating a new address in memory
         (*list)->data = data; // updating the data at that address
@@ -57,7 +56,7 @@ void deleteByIndex(struct Node** list, int index){
     // above two conditions don't get hit What if our list == null?
     // What if the index is NULL?
     // don't forget to free the memory
-    if (*list == NULL){
+    if (isEmpty(*list)){
         printf("The list is empty, we can't delete something from an empty list.\n");
         return; // don't do anything? there is nothing to delete?
     }
@@ -95,7 +94,7 @@ void deleteByIndex(struct Node** list, int index){
 int getDataByIndex(struct Node** list, int index){
     // Index could be out of bounds
     // What if list is null?
-    if (*list == NULL){
+    if (isEmpty(*list)){
         printf("Seems like the linked list is empty, so I can't get you any data. Insert some data into your linked list first.\n");
         return -1;
     } 
