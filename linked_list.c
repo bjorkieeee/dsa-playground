@@ -2,7 +2,6 @@
 // insertAtIndex(): Insert a new node at any specific index.
 // findByValue(): Find the index of a node with a given value.
 // reverseList(): Reverse the entire list.
-// getLength(): Get the total number of nodes in the list.
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -28,6 +27,21 @@ bool isEmpty(struct Node* list){
         return true;
     } else {
         return false;
+    }
+}
+
+int getLength(struct Node** list){
+    if (isEmpty(*list)) {
+        return 0;
+    } else {
+        int count = 0;
+        struct Node* current = *list;
+        while (current->next != NULL){
+            count += 1;
+            current = current->next;
+        }
+        count += 1;
+        return count;
     }
 }
 
@@ -129,17 +143,26 @@ void printAllNodes(struct Node** list){\
     
 
 int main(){
+    // Creating linked list
     struct Node* myLinkedList = initializeLinkedList();
+
+    // Adding items 
     push(&myLinkedList, 100);
     push(&myLinkedList, 200);
     push(&myLinkedList, 300);
     push(&myLinkedList, 400);
     push(&myLinkedList, 500);
 
+    // Deleting items
     deleteByIndex(&myLinkedList, 1);
     int myData = getDataByIndex(&myLinkedList, 0);
     printf("My data is %d\n", myData);
 
+    // Get length
+    int lengthOfLinkedList = getLength(&myLinkedList);
+    printf("The length of my linked list is: %d\n", lengthOfLinkedList);
+
+    // Print all current nodes for reference
     printAllNodes(&myLinkedList);
 
    return 0;
