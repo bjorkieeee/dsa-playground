@@ -1,5 +1,4 @@
 // TODO
-// reverseList(): Reverse the entire list.
 // Make it so that we tell the user what the length was so they can understand why their index was of
 #include <stdio.h>
 #include <stdlib.h>
@@ -199,18 +198,58 @@ void insertAtIndex(struct Node** pHead, int data, int index){
     }
 }
 
+void reverseList(struct Node** pHead){
+    // if list length is greater than 1, reverse, else don't do anything
+    // What is a reverse? 
+    // We just need our next, to point to our previous
+    // When we get to the last item
+    // We need to update our original last to be the head item
+    // We need to update our original head to point to null
+    if (getLength(pHead) > 1){
+        //reverse
+        int count = 0;
+        struct Node* currentNode = *pHead; // point to current node
+        struct Node* nextNode = currentNode->next; // Point to next node
+        struct Node* tempOriginalNextNode = NULL;
+        while (currentNode->next != NULL){ // while not at last item
+            // Adjust the nextNode to point to current node
+            tempOriginalNextNode = nextNode->next; // save what the next node was initially pointing to 
+            nextNode->next = currentNode; // Update next node next to be current node 
+            // Handle the first node to behave as if it were the last node
+            if (count == 0){
+                currentNode->next = NULL;
+                currentNode = nextNode;
+                nextNode = tempOriginalNextNode; // adjust next node to be the old next node
+                count += 1;
+            } else if (tempOriginalNextNode == NULL){
+                break;
+            } else {
+                // Update currentNode to be the next node in list
+                currentNode = nextNode;
+                nextNode = tempOriginalNextNode; // adjust next node to be the old next node
+                count += 1;
+            }
+        }
+        // update current to be the new head "nextNode should be last"
+        *pHead = nextNode;
+    } else {
+        // do nothing
+        return; 
+    }
+}
+
 void printAllNodes(struct Node** pHead){\
     int itemNum = 0;
     struct Node* current = *pHead;
     while (current->next != NULL){
         itemNum += 1;
-        printf("Addess of item %d: %p\n", itemNum, current);
+        printf("Address of item %d: %p\n", itemNum, current);
         printf("Data of item %d: %d\n", itemNum, current->data);
         printf("Address of next item is: %p\n\n", current->next);
         current = current->next;
     }
     itemNum += 1;
-    printf("Addess of item %d: %p\n", itemNum, current);
+    printf("Address of item %d: %p\n", itemNum, current);
     printf("Data of item %d: %d\n", itemNum, current->data);
     printf("Address of next item is: %p\n\n", current->next);
 }
@@ -243,13 +282,26 @@ int main(){
     printf("The index at value 400 is: %d\n", myValue1);
 
     // Inserting
-    insertAtIndex(&myLinkedList, 69, 2); //testing
+    insertAtIndex(&myLinkedList, 69, 2);
 
     // Get length
     int lengthOfLinkedList = getLength(&myLinkedList);
     printf("The length of my linked list is: %d\n", lengthOfLinkedList);
 
     // Print all current nodes for reference
+    printAllNodes(&myLinkedList);
+    
+    printf("Performing reverse\n");
+    reverseList(&myLinkedList);
+    
+    // Print all current nodes for reference REVERSED
+    printAllNodes(&myLinkedList);
+
+
+    printf("REVERSING back to original\n");
+    reverseList(&myLinkedList);
+    
+    // Print all current nodes for reference REVERSED
     printAllNodes(&myLinkedList);
 
    return 0;
