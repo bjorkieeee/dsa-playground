@@ -1,6 +1,6 @@
 // TODO
-// insertAtIndex(): Insert a new node at any specific index.
 // reverseList(): Reverse the entire list.
+// Make it so that we tell the user what the length was so they can understand why their index was of
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -75,6 +75,7 @@ void push(struct Node** pHead, int data){ // list is an address of struct Node t
         *pHead = (struct Node*)malloc(sizeof(struct Node)); // creating a new address in memory
         (*pHead)->data = data; // updating the data at that address
         (*pHead)->next = NULL; // Upsdating the next at that address
+        return;
     } else {
         // not first item
         struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
@@ -82,6 +83,7 @@ void push(struct Node** pHead, int data){ // list is an address of struct Node t
         newNode->next = NULL;
         struct Node* lastItem = getLastItemInLinkedList(*pHead);
         lastItem->next = newNode;
+        return;
     }
 }
 
@@ -116,15 +118,18 @@ void deleteByIndex(struct Node** pHead, int index){
     }
     if (current == NULL){
         printf("Seems like you've entered an index that is out of bounds and does not exist. Did not delete anything.\n");
+        return;
     } else if (current->next == NULL){
         // At the end
         free(current);
         previous->next = NULL;
+        return;
     } else {
         // In the middle
         struct Node* next = current->next;
         previous->next = next;
         free(current);
+        return;
     }
 }
 
@@ -149,11 +154,57 @@ int getDataByIndex(struct Node** pHead, int index){
     }
 }
 
+void insertAtIndex(struct Node** pHead, int data, int index){
+    // handle if our list is empty
+    // handle if our index is out of bounds
+    // handle if our index is 0, which means we need to update our head node in the heap. Which means this new head node
+    // needs to point to our old head node
+    // handle if our index is in the middle, which means our previous needs to point to our new node, and our new node needs to point to next node
+    // handle if our index is last, means we can just call the "push" method
+    if (isEmpty(*pHead)){
+        push(pHead, data);
+        return;
+    } else if (index == 0){
+        struct Node* newNext = *pHead;
+        *pHead = (struct Node*)malloc(sizeof(struct Node));
+        (*pHead)->data = data;
+        (*pHead)->next = newNext;
+        return;
+    } 
+    int count = 0;
+    struct Node* current = *pHead;
+    struct Node* previous = NULL;
+    while (count != index && current->next != NULL && current != NULL){
+        if ( count > 0 && count == index - 1){
+            previous = current;
+        }
+        current = current->next;
+        count += 1;
+    }
+    if (index >= getLength(pHead) || index < 0){
+        // index out of bound
+        printf("Seems like you've entered an index that is out of bounds and does not exist. Can't insert at an index that has no items in it.\n");
+        return;
+    } else if (current->next == NULL){
+        //last item
+        push(pHead, data);
+        return;
+    } else {
+        // in the middle
+        struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+        newNode->data = data;
+        newNode->next = current;
+        previous->next = newNode;
+        return;
+    }
+}
+
 void printAllNodes(struct Node** pHead){\
     int itemNum = 0;
     struct Node* current = *pHead;
     while (current->next != NULL){
         itemNum += 1;
+        printf("Addess of item %d: %p\n", itemNum, current);
         printf("Data of item %d: %d\n", itemNum, current->data);
         printf("Address of next item is: %p\n\n", current->next);
         current = current->next;
@@ -179,10 +230,20 @@ int main(){
     push(&myLinkedList, 500);
     push(&myLinkedList, 600);
 
+
     // Deleting items
     deleteByIndex(&myLinkedList, 1);
+
+    // Getting data at an index
     int myData = getDataByIndex(&myLinkedList, 0);
     printf("My data is %d\n", myData);
+
+    // Finding the index of a value
+    int myValue1 = findByValue(&myLinkedList, 400);
+    printf("The index at value 400 is: %d\n", myValue1);
+
+    // Inserting
+    insertAtIndex(&myLinkedList, 69, 2); //testing
 
     // Get length
     int lengthOfLinkedList = getLength(&myLinkedList);
@@ -190,14 +251,6 @@ int main(){
 
     // Print all current nodes for reference
     printAllNodes(&myLinkedList);
-
-    // Finding the index of a value
-    int myValue1 = findByValue(&myLinkedList, 200);
-    printf("The index at value 200 is: %d\n", myValue1);
-    int myValue2 = findByValue(&myLinkedList, 300);
-    printf("The index at value 300 is: %d\n", myValue2);
-    int myValue3 = findByValue(&myLinkedList, 400);
-    printf("The index at value 400 is: %d\n", myValue3);
 
    return 0;
 }
