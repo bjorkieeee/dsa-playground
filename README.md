@@ -12,3 +12,4 @@ Goals:
 
 ## Maybe in the future TO-DO list
 - Implement a linked list based stack
+- Implement a dynamic with arrays stack
