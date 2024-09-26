@@ -1,9 +1,9 @@
-CURRENT_FILE = stack
+CURRENT_FILE = recursion 
 
 $(CURRENT_FILE): $(CURRENT_FILE).c
 	gcc $(CURRENT_FILE).c -o $(CURRENT_FILE)
 
-run: $(CURRENT_FILE)   
+run: $(CURRENT_FILE)
 	./$(CURRENT_FILE)
 
 # This is how I should remember Makefiles in the future
