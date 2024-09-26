@@ -1,5 +1,6 @@
 // TODO
 // Make it so that we tell the user what the length was so they can understand why their index was of
+// Clean up comments and code
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -254,8 +255,6 @@ void printAllNodes(struct Node** pHead){\
     printf("Address of next item is: %p\n\n", current->next);
 }
 
-    
-
 int main(){
     // Creating linked list
     struct Node* myLinkedList = initializeLinkedList();
@@ -268,7 +267,6 @@ int main(){
     push(&myLinkedList, 400);
     push(&myLinkedList, 500);
     push(&myLinkedList, 600);
-
 
     // Deleting items
     deleteByIndex(&myLinkedList, 1);
