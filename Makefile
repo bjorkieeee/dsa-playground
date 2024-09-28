@@ -1,10 +1,11 @@
-CURRENT_FILE = recursion 
+SOURCE_FILE := quick_sort.c
+EXECUTABLE := quick_sort 
 
-$(CURRENT_FILE): $(CURRENT_FILE).c
-	gcc $(CURRENT_FILE).c -o $(CURRENT_FILE)
+$(EXECUTABLE): $(SOURCE_FILE)
+	gcc $(SOURCE_FILE) -o $(EXECUTABLE)
 
-run: $(CURRENT_FILE)
-	./$(CURRENT_FILE)
+run: $(EXECTUBALE)
+	./$(EXECUTABLE)
 
 # This is how I should remember Makefiles in the future
 # target: dependency
